@@ -1,0 +1,56 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="rotate"
+        android:summary="@string/pref_description_rotate"
+        android:title="@string/pref_title_rotate" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="disable_sound"
+        android:summary="@string/pref_description_silent"
+        android:title="@string/pref_title_silent" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="record_audio"
+        android:summary="Turn off if you don't need audio in your recordings"
+        android:title="Record audio" />
+
+    <Preference
+        android:key="delete_recordings"
+        android:summary="@string/pref_description_delete_recordings"
+        android:title="@string/pref_delete_recordings" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="use_bt"
+        android:summary="Use bluetooth service to autostart when you connect to the bluetooth of your car"
+        android:title="Bluetooth" />
+
+    <Preference
+        android:key="launcher"
+        android:summary="Select other apps that will be started with Dashcam"
+        android:title="Launch with"/>
+    <Preference
+        android:key="min1"
+        android:title="Duration of each recording"
+        android:summary="1 min"/>
+    <Preference
+        android:key="min5"
+        android:summary="5 min"/>
+    <Preference
+        android:key="min30"
+        android:summary="30 min"/>
+    <Preference
+        android:key="gb1"
+        android:title="Max value of video store"
+        android:summary="1 GB"/>
+    <Preference
+        android:key="gb3"
+        android:summary="3 GB"/>
+    <Preference
+        android:key="gb5"
+        android:summary="5 GB"/>
+</PreferenceScreen>
+

@@ -76,7 +76,7 @@ public class DeviceListActivity extends AppCompatActivity {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
             Log.d("BTChose", address);
-            Intent i = new Intent("com.opendashcam.Some_general_constant");
+            Intent i = new Intent("EditMac");
             i.putExtra("MAC",address);
             sendBroadcast(i);
 

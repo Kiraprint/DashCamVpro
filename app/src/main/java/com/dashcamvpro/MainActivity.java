@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
@@ -225,20 +227,21 @@ public class MainActivity extends Activity {
     }
 
     private void launchOtherApps() {
-        try {
-            String filePath = getApplicationContext().getFilesDir().getPath() + "/apps.txt";
-            BufferedReader br = new BufferedReader(new FileReader(filePath));
-            String string = br.readLine();
-            String[] strings = string.split(" ");
-            for (String str : strings) {
-                Log.d("MA", str);
-                Intent intent = getPackageManager().getLaunchIntentForPackage(str);
-                startActivity(intent);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        List<ApplicationInfo> listApplicationInfo = getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
 
+
+
+        for (ApplicationInfo applicationInfo : listApplicationInfo) {
+            String label = applicationInfo.loadLabel(getPackageManager()).toString();
+            String packageName = applicationInfo.packageName;
+            if (sharedPreferences.getBoolean(label, false)){
+                Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+                startActivity(intent);
+                Log.d("Launching", packageName);
+            }
+
+        }
 
     }
 }

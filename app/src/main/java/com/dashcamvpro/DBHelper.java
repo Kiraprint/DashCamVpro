@@ -90,7 +90,8 @@ public final class DBHelper extends SQLiteOpenHelper implements IDBHelper {
      */
     @Override
     public boolean insertNewRecording(Recording recording) {
-        if (com.dashcamvpro.DBRecordingsContract.isRecordingExists(getReadableDatabase(), recording)) return false;
+        if (com.dashcamvpro.DBRecordingsContract.isRecordingExists(getReadableDatabase(), recording))
+            return false;
         return com.dashcamvpro.DBRecordingsContract.insertRecording(getWritableDatabase(), recording);
     }
 
@@ -114,7 +115,10 @@ public final class DBHelper extends SQLiteOpenHelper implements IDBHelper {
      */
     @Override
     public boolean deleteAllRecordings() {
-        return com.dashcamvpro.DBRecordingsContract.deleteAllRecordings(getWritableDatabase());
+        for (Recording rec : selectAllRecordingsList()) {
+            if (!rec.isStarred()) deleteRecording(rec);
+        }
+        return true;
     }
 
     /**

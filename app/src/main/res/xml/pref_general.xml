@@ -43,14 +43,14 @@
         android:key="min30"
         android:summary="30 min"/>
     <Preference
-        android:key="gb1"
-        android:title="Max value of video store"
-        android:summary="1 GB"/>
-    <Preference
         android:key="gb3"
+        android:title="Max value of video store"
         android:summary="3 GB"/>
     <Preference
         android:key="gb5"
         android:summary="5 GB"/>
+    <Preference
+        android:key="gb7"
+        android:summary="7 GB"/>
 </PreferenceScreen>
 

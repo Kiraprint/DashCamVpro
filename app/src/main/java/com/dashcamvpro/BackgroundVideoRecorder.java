@@ -86,15 +86,12 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
         windowManager.addView(surfaceView, layoutParams);
         surfaceView.getHolder().addCallback(this);
 
-        // Set shutter sound based on preferences
-        disableSound(editor);
 
         // Create directory for recordings if not exists
         mRecordingsDirectory = Util.getVideosDirectoryPath();
         if (!mRecordingsDirectory.isDirectory() || !mRecordingsDirectory.exists()) {
             mRecordingsDirectory.mkdir();
         }
-
         //long elapsedTime = System.currentTimeMillis() - startTime;
         //Log.i("DEBUG", "onCreate Time: " + (TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.MILLISECONDS)) + " milliseconds");
     }
@@ -122,6 +119,8 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
     }
 
     private void initMediaRecorder(final SurfaceHolder surfaceHolder) {
+        // Set shutter sound based on preferences
+
         rotateRecordings(BackgroundVideoRecorder.this, Util.getQuota());
         camera = Camera.open();
         Camera.Parameters cameraParams = camera != null ? camera.getParameters() : null;
@@ -130,8 +129,8 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
         //define video quality
         int videoQuality;
         if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
-            videoQuality = CamcorderProfile.QUALITY_1080P;}
-        else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+            videoQuality = CamcorderProfile.QUALITY_1080P;
+        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
             videoQuality = CamcorderProfile.QUALITY_720P;
         } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
             videoQuality = CamcorderProfile.QUALITY_480P;
@@ -197,7 +196,9 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
 
         mediaRecorder.setOutputFile(currentVideoFile);
         mediaRecorder.setMaxDuration(Util.getMaxDuration());
-
+        if (settings.getBoolean("rotate", false)) {
+            mediaRecorder.setOrientationHint(90);
+        }
         // When maximum video length reached
         mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
             @Override
@@ -205,7 +206,10 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
                 if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED && null != mediaRecorder) {
                     mediaRecorder.setOnInfoListener(null);
                     Log.d("VIDEOCAPTURE", "Maximum Duration Reached. Stop recording.");
+                    // Set shutter sound based on preferences
+                    disableSound(editor);
                     mediaRecorder.stop();
+                    reEnableSound();
                     mediaRecorder.reset();
                     mediaRecorder.release();
                     mediaRecorder = null;
@@ -234,7 +238,9 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
             public void run() {
                 try {
                     if (mediaRecorder != null) {
+                        disableSound(editor);
                         mediaRecorder.stop();
+                        reEnableSound();
                         mediaRecorder.reset();
                         mediaRecorder.release();
                         mediaRecorder.setOnInfoListener(null);
@@ -321,9 +327,9 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
 
     /**
      * Disable system sounds if set in preferences
-     *
+     * <p>
      * NOTE: From N onward, volume adjustments that would toggle Do Not Disturb are not allowed unless
-     *              the app has been granted Do Not Disturb Access.
+     * the app has been granted Do Not Disturb Access.
      *
      * @param editor Editor for current recordings preference
      */
@@ -338,13 +344,11 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
                     volume);
             editor.apply();
             // Only make change if not in silent
-            if (volume > 0) {
-                // Set to silent & vibrate
-                audio.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            }
+            // Set to silent & vibrate
+            audio.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
 //        long elapsedTime = System.currentTimeMillis() - startTime;
-//        Log.i("DEBUG", "disableSound Time: " + (TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.MILLISECONDS)) + " milliseconds");
+        Log.i("DEBUG", "disabled sound");
     }
 
     private void reEnableSound() {
@@ -358,7 +362,7 @@ public class BackgroundVideoRecorder extends Service implements SurfaceHolder.Ca
             audio.setStreamVolume(AudioManager.STREAM_SYSTEM, volume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
 //        long elapsedTime = System.currentTimeMillis() - startTime;
-//        Log.i("DEBUG", "reEnableSound Time: " + (TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.MILLISECONDS)) + " milliseconds");
+        Log.i("DEBUG", "reEnabled sound");
     }
 
 

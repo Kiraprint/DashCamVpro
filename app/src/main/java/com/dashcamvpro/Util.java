@@ -38,9 +38,9 @@ public class Util {
     private static final String NOTIFICATIONS_CHANNEL_ID_MAIN_NOTIFICATIONS = "1001";
     private static final String NOTIFICATIONS_CHANNEL_NAME_MAIN_NOTIFICATIONS = "Main notifications";
 
-    public static int QUOTA = 200; // megabytes
-    public static int QUOTA_WARNING_THRESHOLD = 100; // megabytes
-    public static int MAX_DURATION = 45000; // 45 seconds
+    public static int QUOTA = 1024*5; // megabytes
+    public static int QUOTA_WARNING_THRESHOLD = 1024; // megabytes
+    public static int MAX_DURATION = 1000*60*15; // 15 minutes
 
     public static synchronized Util getInstance(){
         if (util == null) util = new Util();

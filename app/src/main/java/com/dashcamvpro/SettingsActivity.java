@@ -2,9 +2,11 @@ package com.dashcamvpro;
 
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -157,7 +159,29 @@ public class SettingsActivity extends com.dashcamvpro.AppCompatPreferenceActivit
                     Intent i = new Intent(context, com.dashcamvpro.DeviceListActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                    if (settings.getBoolean("use_bt",false)) context.startActivity(i);
+                    if (settings.getBoolean("use_bt",false)) {
+                        context.startActivity(i);
+
+                        //Enable Broadcast Receiver
+                        ComponentName componentName = new ComponentName(context, BTReceiver.class);
+                        PackageManager packageManager = context.getPackageManager();
+
+                        packageManager.setComponentEnabledSetting(
+                                componentName,
+                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                PackageManager.DONT_KILL_APP);
+                    }
+                    else{
+
+                        //Disable broadcast receiver
+                        ComponentName componentName = new ComponentName(context, BTReceiver.class);
+                        PackageManager packageManager = context.getPackageManager();
+
+                        packageManager.setComponentEnabledSetting(
+                                componentName,
+                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                PackageManager.DONT_KILL_APP);
+                    }
                     return false;
                 }
             });
@@ -204,19 +228,8 @@ public class SettingsActivity extends com.dashcamvpro.AppCompatPreferenceActivit
                 }
             });
 
-            Preference preference4 = findPreference("gb1");
+            Preference preference4 = findPreference("gb3");
             preference4.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    com.dashcamvpro.Util.QUOTA = 1024;
-                    com.dashcamvpro.Util.QUOTA_WARNING_THRESHOLD = 512;
-                    Log.d("SA", "MD changed");
-                    return false;
-                }
-            });
-
-            Preference preference5 = findPreference("gb3");
-            preference5.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     com.dashcamvpro.Util.QUOTA = 1024*3;
@@ -226,12 +239,23 @@ public class SettingsActivity extends com.dashcamvpro.AppCompatPreferenceActivit
                 }
             });
 
-            Preference preference6 = findPreference("gb5");
-            preference6.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            Preference preference5 = findPreference("gb5");
+            preference5.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     com.dashcamvpro.Util.QUOTA = 1024*5;
                     com.dashcamvpro.Util.QUOTA_WARNING_THRESHOLD = 512*5;
+                    Log.d("SA", "MD changed");
+                    return false;
+                }
+            });
+
+            Preference preference6 = findPreference("gb7");
+            preference6.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    com.dashcamvpro.Util.QUOTA = 1024*7;
+                    com.dashcamvpro.Util.QUOTA_WARNING_THRESHOLD = 512*7;
                     Log.d("SA", "MD changed");
                     return false;
                 }

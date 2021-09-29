@@ -59,4 +59,5 @@ Starred recordings will not be deleted.</string>
 
     <string name="notification_title">Open Dash Cam recording</string>
     <string name="notification_text">Video recording in progress</string>
+    <string name="select_a_paired_device">Select a paired device</string>
 </resources>
